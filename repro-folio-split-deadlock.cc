@@ -36,7 +36,7 @@ std::atomic<int> completed;
 
 void move_ioctl(char* dst, char* src) {
    struct uffdio_move uffdio_move;
-  
+
    uffdio_move.src = (unsigned long)src;
    /* We need to handle page faults in units of pages(!).
       So, round faulting address down to page boundary */
@@ -57,8 +57,8 @@ retry:
 }
 
 void sigbus_handler(int sig, siginfo_t* info, void* ctxt) {
-   assert(sig == SIGBUS && ctxt); 
-  
+   assert(sig == SIGBUS && ctxt);
+
    unsigned long offset = ((char*)info->si_addr - to) & ~(page_size - 1);
    move_ioctl(to + offset, from + offset);
 }
@@ -184,7 +184,7 @@ int main (int argc, char *argv[]) {
 
     signal_threads = 0;
     while (completed.load() < num_threads);
-    printf("iteration %d complated\n", i);
+    printf("iteration %d completed\n", i);
     // mremap to prepare for next iteration
     if (mremap(to, len, len, MREMAP_MAYMOVE | MREMAP_FIXED | MREMAP_DONTUNMAP, from) == MAP_FAILED)
       errExit("mremap");
